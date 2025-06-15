@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOATED FRIENDS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(to right, #fdfcfb, #e2d1c3);
+        min-height: 100vh;
+    }
+
+    h1, h2 {
+        font-family: 'Pacifico', cursive;
+        letter-spacing: 1px;
+    }
+
+    .movie-card {
+        transition: all 0.4s ease-in-out;
+        transform-style: preserve-3d;
+        perspective: 1000px;
+        background: #ffffff;
+        border: 1px solid #e4e4e7;
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+
+    .movie-card:hover {
+        transform: translateY(-8px) scale(1.03);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .movie-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 1;
+    }
+
+    .movie-card:hover::before {
+        opacity: 1;
+    }
+
+    .modal-overlay {
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(6px);
+    }
+
+    .letter-paper {
+        background: #fffaf0;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        position: relative;
+    }
+
+    .letter-paper::before,
+    .letter-paper::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 30px;
+        background: linear-gradient(to top, rgba(255,250,240,1), rgba(255,250,240,0));
+    }
+
+    .letter-paper::before {
+        top: 0;
+    }
+
+    .letter-paper::after {
+        bottom: 0;
+    }
+
+    .confetti {
+        position: fixed;
+        z-index: 9999;
+        opacity: 0;
+        animation: confetti-fall 5s linear forwards;
+    }
+
+    @keyframes confetti-fall {
+        0% {
+            transform: translateY(-100vh) rotate(0deg);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(100vh) rotate(720deg);
+            opacity: 0;
+        }
+    }
+</style>
+
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const App = () => {
+            const [classmates, setClassmates] = useState([
+                {
+                    id: 1,
+                    name: "Lance Gallardo",
+                    role: "The 1st Kupal",
+                    image: "images/Lance.jpg",
+                    password: "hambogka123",
+                    letter: "Dear Tite, \n\nHi daddy lancy 😉, ikaw pinaka naunang nang gago sakin sa paaralan na to tang ina mo. Nung una galit pako sayo kase lagi mo akong ginagago WHAAHAHAHAHAHAHAHAHAH, diko alam sasabihin sayo di ako sanay maging sweet sayo tng ina ka WHAHAHAHAHAHAHA. Anyways pre proud ako kase nakikita ko na trinatry mo mag aral at binago mo ung panggagago mo sakin I love you goodluck sa college (pakyu di ka magcocollege) Mwapsies Daddy! \n\nHa? Hambog ka tng ina ka!\n\nTite"
+                },
+                {
+                    id: 2,
+                    name: "Rj Jaramillo",
+                    role: "Pagawa Act Bayaran Kita",
+                    image: "images/rj.jpg",
+                    password: "chatgpt123",
+                    letter: "Dear Rj, \n\nHAHAHAHAHAHAHAHAHA MAY SAKET de jk lng mabait ka pre (kaso bastos). Pinaka maka-Diyos na gago na nakilala ko tng ina ka WAHAHAHAHA. Nakilala kita sa valo namo kla ko anlakas mo naging bobo nung naging close na WAHAHAHAHAHAHA. Thank you sa wallet pre ah WAHAHAHAHAHAHA KLA NIYO MAKAKASAMBOKOJIN KAYO AH ULOL. De pero etong swimming na ung bawi, eto na pre serious mode kayo yung friend group ko na nag push sakin maging masipag tas mag aral ng mabuti (kahit tamad ako) kase lagi ko kayong nakikita tuwing nag aaral tas may mga alam syempre ayaw ko maleft out valedicktorian ako eh 😎😎. Yun lng eto pre poem para sayo:\n\nLalakeng pangalan ay Rj Jaramillo\nGustong gusto siya ifuck ni Timothy Arquillo\nPagtapos nila magsex ay maninigarilyo\nSabay patugtog sa spotify ng pasilyo"
+                },
+                {
+                    id: 3,
+                    name: "Gabs Caragay",
+                    role: "Photographer Tas Fallacy User",
+                    image: "images/gabs.jpg",
+                    password: "adhominem123",
+                    letter: "Dear Gabs, \n\nHi indio, ikaw pinakaformal na gagong nakilala ko WAHAHAHAHAHAHA. Also napaka selfless mong tao (ulol pakyu). Ikaw din una kong naburautan sa NU lagi mokong hinahatian ng tinapay mo dati WAHAHAHAHAHAHA. Dami mong alam kaya naging digital literate ako. Tas ikaw una kong taga spamcall nung online class pa. Thank you dun sa wallet WAHAHAGAHAHAHA SORRY DI NATULOY SAMBOKOJIN TNG INA INUNA KO PA GF KO GAGAHUHIN LNG PLA KO. ETO NA UNG BAWI UNG SWIMMING. Yun lang naman pre labyu ambait mo pero pansin ko pag sakin ginagago moko WAHAHAHAHAHAHAHA. Stay strong sainyo ni Kirsten 🤭🤭 Stapilacocus. Eto poem para sayo:\n\nIndio kong tropa na si Gabs\nHatakan kaming magtrotropa parang hermit crabs\nSwerte niya meron siyang kaibigang PUPian na laging grab\nKaso may skin defect kaya ang sabon ay dove"
+                },
+                {
+                    id: 4,
+                    name: "Lian Narcida",
+                    role: "Kaaway Ko Nung Una",
+                    image: "images/lian.jpg",
+                    password: "kevin123",
+                    letter: "Dear Lian, \n\nHi LIAN! Nung una kitang nakita naintimidate ako kase inisip ko (ay pota puro aral to wag kong gagaguhin to). Pero yun nga nung tumagal naging close close tayo, personally namimiss ko yung time na nakena lance tayo dun sa entrep, dun ko nafeel na medyo naging close na tayo. PAG NASA IBANG SCHOOL NAKO MAHIHIRAPAN NAKO PUMILI NG LEADER WALA KANA! Thank you Lian kase nakikita ko na lagi mong cinocomfort ung others including me kahit alam ko meron karing mga pinagdadaanan na dimo sinasabi, I admire that trait of yours yk! Diko na alam sasabihin ko pre basta yun thank you talaga legit sobrang dami kong natutunan sayo parang kayo ni Keo magulang ko eh pag cinoconsult ko kayo, thank you din pre dun sa mga ginagawa mong play lalo na tuwing mag kagroup tayo HWAHHAAHAHAHAHAHAHAH! I wish the best for you Lian goodluck on your journey! Sobrang laki ng impact mo sa buhay ko pre legit lang thank you so much! No cap pre ikaw pinakamatalinong babae na kilala ko NO EXAGGERATION NANINIWALA AKO NA MAGIGING SUCCESSFUL KA SOMEDAY! If may kailangan ka the gang is always here lang!! Love you gang! Oh and I may not know much but I really hope the best for you and Kevin I'm rooting for the two of you ket ano man mangyari!\n\nPoem para sayo:\nButi nalang naging close kita Lian\nNapakagrateful ko dahil ikaw ay aking kaibigan\nNaging kasama ka sa mga kulitan\nKaya wag na wag mo kaming kakalimutan\nGusto ko hanggang tumanda tayo tayo ang pupunta sa kanya kanyang libingan"
+                },
+                {
+                    id: 5,
+                    name: "Keo Abuyon",
+                    role: "The Group Leader",
+                    image: "images/keo.jpg",
+                    password: "awesomeguy341",
+                    letter: "Dear Keo, \n\n Pre diko pa talaga alam ilalagay kaya sa graduation narin yung sayo"
+                },
+                {
+                    id: 6,
+                    name: "Jett Tan",
+                    role: "The Freaky People Pleaser",
+                    image: "images/jett.jpg",
+                    password: "ysa111",
+                    letter: "嗨 Jett, \n\n你这个好色又爱取悦别人的家伙。我真的不知道该怎么跟你说话, 毕竟你这个人……他妈的哈哈哈。以前我还刻意避开你，因为我以为你们是那种坏人，结果发现你其实是个超好笑、超真诚的朋友。说实话，我还是不知道该怎么组织这些话，但反正就是 老兄, 我真的爱你！祝你大学生活顺利, 希望你跟Ysa还有机会复合, 感情圆满。不过也要提醒你, 别太过于取悦别人了啦, 太多了就不好。做你自己就够帅了！加油啦, 我会想你的, 爱你喔！AHAHAHAGAHA TRANSLATE MO YAN TNG INA MO, ETO BARS:\n\nMerong akong kaklase pangalan niya ay Jett\nLaki ng katawan tang ina parang si Sett\nPag nakita ko siya sa menu I already know what Imma get\nBut being his friend is something I won’t ever regret\nEven if my life resets"
+                },
+                {
+                    id: 7,
+                    name: "Seiji Tsuchiya",
+                    role: "Stand Up Comedian",
+                    image: "images/seiji.jpg",
+                    password: "slave123",
+                    letter: "Dear Seiji, \n\nHohoho if it isn’t my personal slave WHAHAHAHAHAHAHAH. De joke lang Seiji I love you pre ket lagi ko niraragebait yung putang ina mo 🥰🥰🥰. Goodluck sa arts and letters (testing to if mararagebait ka) WHAHAHAHAHAHAHAHAH. Lagi kita binabackstab dati kase sabi nila rapist ka 🙀🙀🙀. Diko kaya maging sweet sayo pre love language ko sayo manlibre eh HAHAHAAHAHAHA, pero yun lang pre diko alam sasabihin goodluck sa college life denji I love you 😘😘. Eto pre poem nalang:\n\nPara sayo to Seiji\nRapist kaba idk maybe?\nPero siya ay nagbago nung nakilala ang kanyang baby\nPero grabe pagnagfreaky napaka crazy\nPagnasa restaurant uubusin lahat pati gravy"
+                },
+                {
+                    id: 8,
+                    name: "Kevin Orbita",
+                    role: "Freaky Tall Dude",
+                    image: "images/kevin.jpg",
+                    password: "lian123",
+                    letter: "Dear Keb, \n\nHi daddy I love the way you handle and shoot them balls omfg I think Im bout to bust while writing this letter for you I wish you could fuck the shit out of me rn. AHAHAHAHAHAHAHAHAHAHAHA pero pre mamimiss kita sana maging successful ka sa Canada pre magaral kang mabuti baby tas thank you rin pre kase ang sweet mo mang comfort kinikilig betlog ko I appreciate you my N word labyu 😍😍😍 I wish the best for you and Lian 🫣🫣🫣!! Eto tula para sayo\n\nTropa kong napakatangkad\nPinapasaya niya ko tuwing ako’y sad\nKaya gusto siyang nakahubad\nTas pasubuin ng sagad\nNa parang aking alagad"
+                },
+                {
+                    id: 9,
+                    name: "Benedict Jovellanos",
+                    role: "Goofy Fuck",
+                    image: "images/ben.jpg",
+                    password: "mynameis123",
+                    letter: "Dear Benedict,\n\nHi hypothetically my name is Timothy Arquillo, is that crystal clear? AHAHAHAHAHAHAHAHAHAHA Hi Ben 😍😍 love na love kita my little goofball ahihihi I wish I can kiss you right now 🥺🥺. De jk lng pre goodluck sa Los Baños I’m so proud of you daddy keep grinding to get those UPLB huzz 🤪🤪. Naalala ko pa nung sinusundan mo kami sa SM like a fucking dumbass WAHAHAHAHAHAHAHAHA yun lang pre sana wag moko sapakin pag wala kang tulog 🥰🥰🥰. Eto pre tula para sayo\n\nGrabe sobrang pogi ni Benedict\nNung nakita ko siya gusto ko agad mag take ng pic\nSiguro pag finuck niya ko Imma end it quick\nGrabe ka talaga Ben\nIkaw ay isang ten out of ten\nSobrang bilis ko mag bust pag sayo akala mo tren\nAnd that's why you are my fren"
+                },
+                {
+                    id: 10,
+                    name: "Jayke Lacson",
+                    role: "Lava Chicken",
+                    image: "images/jayke.jpg",
+                    password: "avaavaava",
+                    letter: "Dear Jayke,\n\nOh hell nah I ain’t showin you my cutiepatootie side fuck tat. De jk lng pre I love you pre ket medyo late na tayo naging close, nung una inisip ko ikaw may pinaka aura sa friend group niyo eh kaso isa lang pala balls mo. Tang ina ano sasabihin ko sayo ahm goodluck sainyo ni Ava 😍😍😍 WAHAHAHAHAHAHAHA. Di pre naalala ko ung sinabi mo kena Ysa di ka nag oopen ng problema kase iniisip mo meron din kami pero pangit yun pre W listener pa naman si glorious Timo 🥰🥰. TNG INA ANG CRINGE MAGING SWEET I AIN’T WRITIN ALLAT MAG KADORM NAMAN TAYO PAKYU. Eto tula nalang para sayo:\n\nHello para sa tropa kong si Jayke\nOh lala gusto ko tikman kanyang cake\nPakyu ka gago lagi kang late\nYan kase puro ka masterbate\nHehe kelan kaya kayo mag dadate 🥰"
+                },
+                {
+                    id: 11,
+                    name: "Alfonso Pascua",
+                    role: "Ragebaiter",
+                    image: "images/pons.jpg",
+                    password: "zion123",
+                    letter: `Dear Pons,\n\nMeron nakong naka sulat sayo pero sa graduation ko na lagay dito kase baka gaguhin mo agad ako bukas eh DHWABHDJWADHJAWHDAHDAHAH`
+                },
+                {
+                    id: 12,
+                    name: "Mark Bulalayao",
+                    role: "Chicken Biryani",
+                    image: "images/mark.jpg",
+                    password: "gyno123",
+                    letter: `Dear Mark,\n\nHehe sa Graduation na yung sayo pre kinulang ako sa oras Labyu!`
+                },
+                {
+                    id: 13,
+                    name: "Troy Rafallo",
+                    role: "Ambait Ampota",
+                    image: "images/troy.jpg",
+                    password: "jodi123",
+                    letter: `Dear Troy,\n\nErm troy di ko alam sasabihin so sa Graduation na ung sayo hehe sorry I love you!`
+                },
+                {
+                    id: 14,
+                    name: "Martin Nuñez",
+                    role: "The Dictator",
+                    image: "images/Martin.jpg",
+                    password: "hitler123",
+                    letter: "Dear Marts,\n\nTang ina parang ambading ginagawan kita letter edi sana nagsubuan nalang tayo ng tite. Hi pre kasama ka sa unang kagaguhan ko sa NU (˶ᵔ ᵕ ᵔ˶) ginago natin si Kuya Wil WAHHAHAHAHAHAAHA tang ina napasorry kay Ysa ng wala sa oras eh. Thank you pre kase nandyan tayo sa bahay niyo nun nung nag breakdown ako like a fucking bitch. Mamimiss ko yung mga tambay natin jan pre pati yung mga aso mo na ilang beses ko na natapakan yung tae. Mamimiss ko rin yung late night discord talks natin kahit para tayong bading na naka open cam tas nag susubuan ng tite. Yun lang pre hirap kase maging sweet pag sa lalake eh wAHHAHAHAHAHA Goodluck sa nursing career mo sana di mo patayin mga pasyente mo tas sana di rin kita maging doctor tas goodluck din sa roblox grind mo sana di mo na utusan yaya mo para icheck kung nasa afk chamber ka T_T Labyu pre mwamwa tsuptsup\n\nMeron akong tropa na si Martin\nTang ina walang buhay anlakas sa grow a garden\nDi niya parin nabibigay yung aking ramen\nBaka ubusin ko nalang ang kanyang semen"
+                },
+                {
+                    id: 15,
+                    name: "Arianna Aguirre",
+                    role: "DINGLEBERRY",
+                    image: "images/arianna.jpg",
+                    password: "49N7LE25RRY",
+                    letter: "Dear Arianna,\n\nHI DINGLEBERRY! Erm ngl I wasn’t expecting na magiging close tayo but I’m so glad that we did! I REALLY ENJOYED YUNG YAPPING SESSION NATIN nung papunta kena Lance I WASN’T EXPECTING THAT KASE USUALLY ANG INTROVERTED KO 😭! THANKS for recommending SOME OF THE BEST INDIE GAMES I’VE EVER PLAYED!! Also for PLAYIN WITH ME I THOUGHT MABOBORED KA 😭 FIRST TIME SOMEONE WATCHED ME AND ACTUALLY GAF! I enjoyed every game we played lalo na yung mga fucking jumpscares sa Bendy tas yung plot twist sa until then WHAHAHAHAHAHAHAHA. I’M LOOKING FORWARD TO PLAYIN MORE GAMES WITH YOU! On a more serious note tho thanks din lalo na nung work immersion era, you were one of the people na nakinig and nakausap ko regarding my problems since everyone was busy with their work thank you for finding the time to still reply sa mga rant ko and every time that we played yun yung nag serve as a distraction from my problems, yun thanks again for listening even tho you said so yourself you’re not really good at comforting. I’M SO GLAD THAT IM COMFORTABLE NA MAG OPEN UP SAYO! THAT’S ALL FROM ME MUNA GOODLUCK ON YOUR COLLEGE JOURNEY BRO I’M GONNA MISS YOU! Don’t let anyone take your kindness for granted bro YOU ARE PROBABLY THE KINDEST PERSON I KNOW! DON’T SHOW THIS TO ANYONE OGEY? Here’s some bars 🤓:\n\nThis one is for Dingleberry\nKasama ko siyang maglaro ng games na scary\nKagabi kakakita lang namin ng mga cannibal sa dairy\nPangalan niya ay Arianna\nSkin niya sa Minecraft ay banana\nLitong lito kami sa pinagsasabi ni Louise Orduina\nKaya utak namin ay talagang nawala na"
+                },
+                {
+                    id: 16,
+                    name: "Ysabelle Carandang",
+                    role: "Naka move on na raw?",
+                    image: "images/ysa.jpg",
+                    password: "J and T Express",
+                    letter: "Dear Ysabelle,\n\nHey bro ngl diko inexpect na magiging close tayo 😭 kase first impression ka sayo is masungit tapos first interaction pa natin is nung pinagtritripan namin si kuya wil, kinabahan ako non kala ko issue agad sa start ng grade 11 ko WAHAHAGAGAHSHAHA. Nagsimula to sa pakyuhan tas naging pagandahan ng jokes tas boom naging close na tayo bigla, kasama maging delusional pag lagpas na ng 12am WAHAHAHAHAHAHAHA although medyo late na tayo naging close grateful parin ako! Thanks pre kase kasama ka nung nag open ako nababaliw nako non WAHAHAHAHAHA. I know may mga problems karin pre and don’t hesitate on opening up ik I’m not the best comforter but I can listen naman! Thanks din kase everytime na nanjan tayo sa house niyo parang nawawala sa isip ko ung mga problema. Yun lang naman pre thanks again AND GOODLUCK SA COLLEGE BRO!! PATI KAY 🤪🤪🤪🤪\n\nTropa kong may ngalang Ysa\nPag nag aya siyang tumambay pupuntahan agad ket wala akong VISA\nBoses niya kala mo art parang Mona Lisa\nNung narinig ko naguluhan ako kung si Billie ba or Sza\nAko'y nabigla tila naparalisa"
+                },
+                {
+                    id: 17,
+                    name: "Louise Tadina",
+                    role: "Bestfriend ko ung bestfriend neto",
+                    image: "images/Louise.jpg",
+                    password: "cupnoodles123",
+                    letter: "Dear Louise,\n\nHi bro! Sorry agad kase pangit trato ko sayo nung una alam mo naman na yung reason why 😭. Thank you pre for telling me everything and also being honest when you made a mistake I appreciate it! Alam ko pre marami karing shit na pinagdadaanan and I wish I can say na it’ll be okay but no one is sure of that but hey you got us naman just tell us kung may problema ka or something! You are a great person bro I hope you also see that and value yourself more! Thanks din pala kase naging tambayan natin ung house mo WAHAHAHAHAHAHA. Yun lang pre thanks again mamimiss kita, GOODLUCK SA COLLEGE ISKO!!! Eto poem 😎:\n\nEveryone eto nga pala tropa kong si Louise\nSana makahanap na siya nang lalakeng buhay ay willing ibuwis\nKet di kami close nung una siya ay aking mamimiss\nPag ikaw ay may problema wag kang mag hesitate tawagin kami sis!"
+                },
+                {
+                    id: 18,
+                    name: "Francine Lopez",
+                    role: "Sa Bawat Sandali",
+                    image: "images/francine.jpg",
+                    password: "smol123",
+                    letter: "Dear Francine,\n\nONE OF THE FIRST PERSON I INTERACTED WITH SA NU WAHAHAHAHAHAHA. Una palang pansin ko na maypagkagago to eh, binash mo agad yung isa nating kagrupo 😭. I really admire yung pagiging energetic mo and sobrang approachable! Although late narin before ko kayo naging close I still appreciate our friendship! Thank you pre kase nung nakayla Ysa I saw that you really cared and you immediately checked yung wrist ko dw bro takot ako sa dugo WAHAHAHAHAHAHAHA, and thank you rin kase lagi niyo kong trinatry icheerup (kayo ni Ysa) tas yung iconic line na “Kapag magulo na ang mundo T_T”. Ay tas ket parang maliit na bagay thank you for congratulating me dun sa grades ko!!! Eto bars pre:\n\nEtong bars na to ay para kay Francine\nPag malungkot ay agad niyang napapansin\nAt mapapatawa ka agad sa isang tingin\nKaya yung buldak ko maari ko na bang hingiin?\nKung hinde tutulak kita sa bangin"
+                },
+                {
+                    id: 19,
+                    name: "Reine Co",
+                    role: "Ni hao ma",
+                    image: "images/co.jpg",
+                    password: "vegeta123",
+                    letter: "亲爱的 Co,\n\n嘿嘿, 写这封信给你之前, 我就已经在想要怎么把Gwyneth塞进去。你那小小的暗恋, 大家早就知道啦～别害羞了！快去追啊, 机会不等人！还有啊，说到你——不能不提一下你的发际线……兄弟，虽然它一直在“后退”, 但你的人格魅力还是“前进”的啦！（不过认真讲, 可能要早点存钱考虑护发产品咯！）说正经的，真的祝你一切顺利, 大学生活一定会给你很多新的挑战和机会。我知道你一定可以的！你是一个好人，有趣又真诚, 大家都会想你的, 当然我也会。再见不是永别, 常回来看看, 别忘了我们这些老朋友。保重啦, 发际线也要保重, 哈哈！祝你好运, 哥们！会想你的 ❤️ Translate mo tng ina mo, eto tula para sayo:"
+                },
+                {
+                    id: 20,
+                    name: "Zion Padilla",
+                    role: "OUR KING",
+                    image: "images/zion.jpg",
+                    password: "dalawangkape123",
+                    letter: `Dear Zion,\n\nSa Graduation na sayo my king pls pardon the delay sir`
+                },
+                {
+                    id: 21,
+                    name: "Gabrielle Tomas",
+                    role: "Coach",
+                    image: "images/gab.jpg",
+                    password: "coachcarter",
+                    letter: "Dear Gab,\n\nHi coach, ikaw una kong nakalaban sa mid coach naafiri diff onting practice pa pre. Mamimiss kita pre I love you coach tang ina diko alam sasabihin sayo WAHAHAHAHAHAHAHA\n\nGrabe tite ay nilabas\nPangalan niya ay Tomas\nTinamuran ako sa mukha nagiwan ng bakas\nGrabe iba talaga si coach anlakas"
+                },
+                {
+                    id: 22,
+                    name: "Edison Babijes",
+                    role: "Lumaki po ako sa farm",
+                    image: "images/edigong.jpg",
+                    password: "edigong123",
+                    letter: "Dear Edison,\n\nHi pre thank you pre kase isa ka sa napagoopenan ko ng mga shit ket medyo gago ka minsan. Thank you rin pre kase anlakas ng tiwala mo sakin sa bball ket alam ko namang malakas ako WAHAHAHAHAHA. Nung una kunwari kapa eh nahihiya kapa kumopya sa genmath ULOL. Mamimiss kita pre goodluck sa college pati kay ano 😝😝😝. To pre tula:\n\nGrabe unang laro niya ako ay napa \"damn son\"\nSiya nga pala si Edison\nKaya sana siya ay bigyang pansin\nNg babaeng gusto niya na ang pangalan ay Francine"
+                },
+                {
+                    id: 23,
+                    name: "Mariel Pocallan",
+                    role: "Straight",
+                    image: "images/tomboy.jpg",
+                    password: "tomboy123",
+                    letter: "Dear Mariel,\n\nPangit ni Winter WAHAHSHSHAHAHAHA JK LANG. Kala ko ambait mo eh nung nasa condo tayo ni Rovyn, puta nung naging close sa valo ginagago mo narin ako AHAHAHAHAHA. Diko alam sasabihin sayo pre, goodluck sa college pre mamimiss ko kayo, ingat yung mga LPU baddies sayo tas reto mo narin ako (tang ina mo joke lang to ah wag mo papakita sakanila). Pakitaan nalang kita rap skills:\n\nTropa kong bading na si Mariel\nGrabe kasing pogi niya si Daniel\nIba talaga pag tomboy\nGrabe pagdating neto sa LPU siguro magiging playboy"
+                },
+                {
+                    id: 24,
+                    name: "Charles Peradilla",
+                    role: "AYUN OHHHH",
+                    image: "images/cha.jpg",
+                    password: "arawkopo",
+                    letter: `Dear Charles,\n\nHell nah di kita gagawan ng putang inang letter tatawanan mo lang ung putang ina ko pakyu ka subo mo to sinira mo buhay ko sa sugal bad influence kang gago ka.`
+                },
+                {
+                    id: 25,
+                    name: "Paulo Lacuesta",
+                    role: "Tang Ina Burgis",
+                    image: "images/pau.jpg",
+                    password: "burgis123",
+                    letter: `Dear Paulo,\n\nYou filled our spaces with rhythm and soul. Your music was the heartbeat of our class.\n\nPlay on, wherever life takes you!`
+                },
+                {
+                    id: 26,
+                    name: "Eisen Ignacio",
+                    role: "My Nonchalant King",
+                    image: "images/eisen.jpg",
+                    password: "ruth123",
+                    letter: `Dear Eisen,\n\nWala diko pa tapos tang ina crinam ko kase`
+                },
+                {
+                    id: 27,
+                    name: "Luke Mangampo",
+                    role: "Malapit Na Yung Diamonds",
+                    image: "images/luke.jpg",
+                    password: "diamonds123",
+                    letter: `Dear Luke,\n\nHWHAHAHAHAHAHAHAAHAHHAHAHAHAHAAHAHAHAHAHAHAH TITETITETITE`
+                },
+                {
+                    id: 28,
+                    name: "Christopher Martinez",
+                    role: "PANOT PANOT PANOT",
+                    image: "images/james.jpg",
+                    password: "TNGINAMOPANOT",
+                    letter: "Dear Panot,\n\nHi pre tingin mo kaya ko maging sweet sayo 😈😈😈??? De joke lang pre nung una kala ko I fucked up eh kala ko mag cracrashout ka nung tinawag kita by your last name ata or middle name WAHAHAHAHAHAHA. I love you pre parang meant to be tayo tuwing random groupings eh WAHAHAHAHAHA. Thank you pre kase nandon ka nung umiyak ako sa bahay nina Marts taba mo kasi eh kaya parang unan. Mamimiss kita panot tng ina mo katok kalang sa dorm namin di kita papapasukin! Eto bars:\n\nOh kaibigan kong panot\nAkala ko ikaw ay salot\nPero nung nakilala kita kaligayahan ako ay binalot\nSa sobrang onti ng buhok mo hindi na mapredict ng tarot"
+                },
+                {
+                    id: 29,
+                    name: "Voltaire Villasanta",
+                    role: "The Big Bear",
+                    image: "images/voltaire.jpg",
+                    password: "MATABA123",
+                    letter: `Dear Voltaire,\n\nUnder Construction!`
+                }
+
+            ]);
+            
+            const [selectedClassmate, setSelectedClassmate] = useState(null);
+            const [passwordInput, setPasswordInput] = useState("");
+            const [passwordError, setPasswordError] = useState(false);
+            const [showLetter, setShowLetter] = useState(false);
+            const [searchTerm, setSearchTerm] = useState("");
+            
+            const handleCardClick = (classmate) => {
+                setSelectedClassmate(classmate);
+                setPasswordInput("");
+                setPasswordError(false);
+                setShowLetter(false);
+            };
+            
+            const handlePasswordSubmit = (e) => {
+                e.preventDefault();
+                if (passwordInput === selectedClassmate.password) {
+                    setPasswordError(false);
+                    setShowLetter(true);
+                    createConfetti();
+                } else {
+                    setPasswordError(true);
+                }
+            };
+            
+            const closeModal = () => {
+                setSelectedClassmate(null);
+                setShowLetter(false);
+            };
+            
+            const createConfetti = () => {
+                const colors = ['#f00', '#0f0', '#00f', '#ff0', '#f0f', '#0ff'];
+                
+                for (let i = 0; i < 100; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = Math.random() * 10 + 5 + 'px';
+                    confetti.style.height = Math.random() * 10 + 5 + 'px';
+                    confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 5000);
+                }
+            };
+            
+            const filteredClassmates = classmates.filter(classmate => 
+                classmate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                classmate.role.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            return (
+                <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+                    {/* Header */}
+                    <div className="text-center mb-12">
+                        <h1 className="text-4xl font-bold text-gray-900 mb-2">GOATED SENIOR HIGH SCHOOL FRIENDS</h1>
+                        <p className="text-xl text-gray-600">Lahat ng poem jan impromptu 😎😎😎</p>
+                        
+                        <div className="mt-8 max-w-md mx-auto">
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i className="fas fa-search text-gray-400"></i>
+                                </div>
+                                <input
+                                    type="text"
+                                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-full bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    placeholder="Search classmates..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                
+                    {/* Classmates Grid - Polaroid Style */}
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-6 justify-center">
+                        {filteredClassmates.map(classmate => (
+                        <div 
+                            key={classmate.id}
+                            onClick={() => handleCardClick(classmate)}
+                            className="movie-card bg-white border-2 border-gray-300 rounded-xl shadow-md w-64 h-auto pb-5 cursor-pointer flex flex-col items-center transition transform hover:-translate-y-1 hover:shadow-xl"
+                        >
+                            <div className="w-full h-64 overflow-hidden rounded-t-xl">
+                            <img 
+                                src={classmate.image || "https://via.placeholder.com/256x256?text=No+Image"} 
+                                alt={classmate.name}
+                                className="w-full h-full object-cover object-top"
+                            />
+                            </div>
+
+                            <div className="mt-4 text-center px-3">
+                                <h3 className="font-bold text-lg text-gray-800">{classmate.name}</h3>
+                                <p className="text-sm text-gray-500">{classmate.role}</p>
+                                <p className="text-xs mt-1 text-blue-500 italic">Pindutin niyo to mga fuckers</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                    
+                    {/* Modal */}
+                    {selectedClassmate && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay">
+                            <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-xl">
+                                {!showLetter ? (
+                                    <div className="p-8">
+                                        <div className="flex justify-between items-start mb-6">
+                                            <div>
+                                                <h2 className="text-2xl font-bold text-gray-900">{selectedClassmate.name}</h2>
+                                                <p className="text-gray-600">{selectedClassmate.role}</p>
+                                            </div>
+                                            <button 
+                                                onClick={closeModal}
+                                                className="text-gray-500 hover:text-gray-700"
+                                            >
+                                                <i className="fas fa-times text-xl"></i>
+                                            </button>
+                                        </div>
+                                        
+                                        <div className="mb-8 flex">
+                                            <img 
+                                                src={selectedClassmate.image} 
+                                                alt={selectedClassmate.name}
+                                                className="w-32 h-32 rounded-full object-cover mr-6 border-4 border-blue-100"
+                                            />
+                                            <div className="flex-1">
+                                                <h3 className="text-lg font-semibold mb-2">Personal Letter</h3>
+                                                <p className="text-gray-700 mb-4">
+                                                    Letter ko para sayo pag dimo alam password pakyu ka
+                                                </p>
+                                                
+                                                <form onSubmit={handlePasswordSubmit}>
+                                                    <div className="mb-4">
+                                                        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                                                            Password hulaan mo
+                                                        </label>
+                                                        <input
+                                                            type="password"
+                                                            id="password"
+                                                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                            value={passwordInput}
+                                                            onChange={(e) => setPasswordInput(e.target.value)}
+                                                            placeholder="Our secret code..."
+                                                        />
+                                                        {passwordError && (
+                                                            <p className="mt-1 text-sm text-red-600">Incorrect password. Bonak mo naman.</p>
+                                                        )}
+                                                    </div>
+                                                    
+                                                    <button
+                                                        type="submit"
+                                                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition duration-200"
+                                                    >
+                                                        Unlock Letter
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="p-8">
+                                        <div className="flex justify-between items-start mb-6">
+                                            <div>
+                                                <h2 className="text-2xl font-bold text-gray-900">For {selectedClassmate.name}</h2>
+                                                <p className="text-gray-600">My personal message to you</p>
+                                            </div>
+                                            <button 
+                                                onClick={closeModal}
+                                                className="text-gray-500 hover:text-gray-700"
+                                            >
+                                                <i className="fas fa-times text-xl"></i>
+                                            </button>
+                                        </div>
+                                        
+                                        <div className="letter-paper p-8 rounded-lg">
+                                            <div className="text-center mb-6">
+                                                <img 
+                                                    src={selectedClassmate.image} 
+                                                    alt={selectedClassmate.name}
+                                                    className="w-20 h-20 rounded-full object-cover mx-auto border-4 border-blue-100"
+                                                />
+                                            </div>
+                                            <div className="whitespace-pre-line text-gray-800">
+                                                {selectedClassmate.letter}
+                                            </div>
+                                            <div className="mt-8 pt-4 border-t border-gray-200 text-right">
+                                                <p className="text-gray-600">With love,</p>
+                                                <p className="font-semibold">The Great Fucking Timo</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="mt-8 text-center">
+                                            <button
+                                                onClick={closeModal}
+                                                className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-md transition duration-200"
+                                            >
+                                                Close
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                    
+                    {/* Footer */}
+                    <footer className="mt-16 text-center text-gray-600">
+                        <p>Created with ❤️ for the friends I've met this senior high school</p>
+                        <p className="mt-1 text-sm">Graduation Year 2025</p>
+                    </footer>
+                </div>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
